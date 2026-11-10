@@ -1,345 +1,564 @@
 <!DOCTYPE html>
-<html lang="es" class="scroll-smooth">
+<html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>C.E.A DRIVING S.A.S. | Trámites de Tránsito & Clases de Conducción</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Firebase SDK Modular (v10) -->
-    <script type="module">
-        import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
-        import { getAnalytics } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-analytics.js";
-        import { 
-            getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
-        import { 
-            getAuth, 
-            signInWithEmailAndPassword, 
-            GoogleAuthProvider, 
-            signInWithPopup, 
-            RecaptchaVerifier, 
-            signInWithPhoneNumber, 
-            signOut, 
-            onAuthStateChanged 
-        } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#101e35">
+  <meta name="description" content="C.E.A. DRIVING S.A.S. Formación para conductores y orientación en trámites de tránsito en Bogotá y Cundinamarca.">
+  <title>C.E.A. DRIVING S.A.S. | Aprende a conducir con confianza</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --navy: #101e35;
+      --navy-2: #182b49;
+      --blue: #2563eb;
+      --blue-2: #3978f6;
+      --gold: #e7b64a;
+      --gold-soft: #fff5dc;
+      --ink: #17243a;
+      --muted: #66748a;
+      --line: #e7ebf1;
+      --surface: #f5f7fa;
+      --white: #fff;
+      --green: #159b68;
+      --shadow: 0 20px 60px rgba(16,30,53,.10);
+      --radius: 22px;
+      --container: 1160px;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 100px; }
+    body { margin: 0; color: var(--ink); background: #fff; font-family: 'DM Sans', sans-serif; line-height: 1.6; }
+    a { color: inherit; text-decoration: none; }
+    button, input, select { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    .container { width: min(var(--container), calc(100% - 40px)); margin-inline: auto; }
+    .topbar { background: var(--navy); color: rgba(255,255,255,.78); font-size: 12px; }
+    .topbar-inner { min-height: 38px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    .topbar-group { display: flex; align-items: center; gap: 20px; flex-wrap: wrap; }
+    .topbar a:hover { color: var(--gold); }
+    .topbar .whatsapp-top { color: #7de0b4; font-weight: 800; }
+    .site-header { position: sticky; top: 0; z-index: 50; background: rgba(255,255,255,.94); backdrop-filter: blur(16px); border-bottom: 1px solid rgba(231,235,241,.9); }
+    .nav-wrap { height: 82px; display: flex; align-items: center; justify-content: space-between; gap: 26px; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; flex-shrink: 0; }
+    .brand-mark { width: 46px; height: 46px; border-radius: 14px; display: grid; place-items: center; color: var(--gold); background: var(--navy); font-family: Manrope,sans-serif; font-size: 23px; font-weight: 800; box-shadow: 0 8px 18px rgba(16,30,53,.18); position: relative; }
+    .brand-name { display: block; color: var(--navy); font: 800 17px/1.15 Manrope,sans-serif; letter-spacing: -.5px; }
+    .brand-sub { display: block; color: var(--muted); font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; margin-top: 4px; }
+    .nav-links { display: flex; align-items: center; gap: 26px; color: #43516a; font-size: 13px; font-weight: 700; }
+    .nav-links a { transition: color .2s; }
+    .nav-links a:hover, .nav-links a.active { color: var(--blue); }
+    .nav-actions { display: flex; align-items: center; gap: 10px; }
+    .btn { border: 0; display: inline-flex; align-items: center; justify-content: center; gap: 9px; padding: 13px 19px; border-radius: 12px; font-size: 13px; font-weight: 800; cursor: pointer; transition: transform .2s, box-shadow .2s, background .2s; }
+    .btn:hover { transform: translateY(-2px); }
+    .btn-primary { color: #fff; background: var(--blue); box-shadow: 0 10px 22px rgba(37,99,235,.20); }
+    .btn-primary:hover { background: #1d4ed8; }
+    .btn-dark { color: #fff; background: var(--navy); }
+    .btn-light { color: var(--navy); background: #fff; border: 1px solid var(--line); }
+    .btn-whatsapp { color: #fff; background: var(--green); }
+    .btn-whatsapp:hover { background: #0e875a; }
+    .menu-toggle { display: none; border: 1px solid var(--line); background: #fff; width: 44px; height: 44px; border-radius: 12px; color: var(--navy); cursor: pointer; font-size: 21px; }
 
-        // Credenciales oficiales de ceadriving-2942a
-        const firebaseConfig = {
-            apiKey: "AIzaSyAP7ghWc3ztba9v0jRdgXPZhuhR9zopiwg",
-            authDomain: "ceadriving-2942a.firebaseapp.com",
-            projectId: "ceadriving-2942a",
-            storageBucket: "ceadriving-2942a.firebasestorage.app",
-            messagingSenderId: "800710138962",
-            appId: "1:800710138962:web:9fef2a7627c2a1e2c0d38b",
-            measurementId: "G-GMK5RTMRN8"
-        };
+    /* Hero con imagen corporativa integrada */
+    .hero { position: relative; overflow: hidden; padding: 60px 0; background: var(--navy); color: #fff; }
+    .hero-grid { display: grid; grid-template-columns: 1fr; gap: 30px; align-items: center; }
+    .hero-banner-img { width: 100%; border-radius: var(--radius); box-shadow: var(--shadow); border: 2px solid rgba(255,255,255,0.15); display: block; }
 
-        // Inicializar Firebase
-        const app = initializeApp(firebaseConfig);
-        const analytics = getAnalytics(app);
-        const db = getFirestore(app);
-        const auth = getAuth(app);
-        const googleProvider = new GoogleAuthProvider();
+    .quickbar { background: #fff; border-bottom: 1px solid var(--line); }
+    .quickbar-grid { display: grid; grid-template-columns: repeat(3,1fr); }
+    .quick-item { display: flex; align-items: center; gap: 13px; padding: 23px 25px; border-right: 1px solid var(--line); }
+    .quick-item:first-child { padding-left: 0; } .quick-item:last-child { border: 0; }
+    .quick-icon { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 13px; color: var(--blue); background: #edf3ff; font-size: 19px; flex-shrink: 0; }
+    .quick-item strong { display: block; color: var(--navy); font: 800 13px Manrope,sans-serif; }
+    .quick-item small { color: var(--muted); font-size: 11px; }
 
-        // Exponer objetos y funciones globales
-        window.db = db;
-        window.auth = auth;
-        window.googleProvider = googleProvider;
-        window.firebaseAddDoc = addDoc;
-        window.firebaseCollection = collection;
-        window.firebaseGetDocs = getDocs;
-        window.firebaseQuery = query;
-        window.firebaseOrderBy = orderBy;
-        window.firebaseServerTimestamp = serverTimestamp;
+    section.content-section { padding: 88px 0; }
+    .section-heading { max-width: 670px; margin: 0 auto 42px; text-align: center; }
+    .section-heading h2 { color: var(--navy); margin: 13px 0 12px; font: 800 clamp(28px,3.5vw,40px)/1.18 Manrope,sans-serif; letter-spacing: -1.2px; }
+    .section-heading p { color: var(--muted); font-size: 14px; line-height: 1.8; margin: 0; }
+    .courses { background: var(--surface); }
+    .course-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 22px; }
+    .course-card { position: relative; overflow: hidden; background: #fff; border: 1px solid var(--line); border-radius: var(--radius); padding: 29px; box-shadow: 0 8px 24px rgba(16,30,53,.035); transition: transform .25s,box-shadow .25s; }
+    .course-card:hover { transform: translateY(-5px); box-shadow: var(--shadow); }
+    .course-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 18px; }
+    .course-icon { width: 58px; height: 58px; border-radius: 17px; display: grid; place-items: center; color: var(--blue); background: #edf3ff; font-size: 26px; }
+    .course-code { padding: 7px 10px; border-radius: 30px; color: #906b1e; background: var(--gold-soft); font-size: 10px; font-weight: 900; letter-spacing: 1px; }
+    .course-card h3 { color: var(--navy); margin: 20px 0 8px; font: 800 22px Manrope,sans-serif; }
+    .course-card p { min-height: 52px; color: var(--muted); font-size: 13px; line-height: 1.75; }
+    .course-points { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 17px 0 19px; border-top: 1px solid var(--line); }
+    .course-points span { color: #526078; font-size: 11px; font-weight: 700; }
+    .course-points span:before { content: '✓'; color: var(--green); font-weight: 900; margin-right: 7px; }
+    .text-link { color: var(--blue); font-size: 12px; font-weight: 900; }
+    .text-link:hover { text-decoration: underline; }
+    .notice { margin: 22px auto 0; max-width: 900px; padding: 14px 17px; border: 1px solid #f1dfb8; border-radius: 13px; background: #fffaf0; color: #78602c; font-size: 11px; line-height: 1.6; }
 
-        // Métodos de Autenticación
-        window.firebaseSignInEmail = signInWithEmailAndPassword;
-        window.firebaseSignInGoogle = () => signInWithPopup(auth, googleProvider);
-        window.RecaptchaVerifier = RecaptchaVerifier;
-        window.signInWithPhoneNumber = signInWithPhoneNumber;
-        window.firebaseSignOut = signOut;
-        window.firebaseOnAuth = onAuthStateChanged;
-    </script>
+    .process-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 17px; }
+    .process-card { padding: 25px 20px; background: #fff; border: 1px solid var(--line); border-radius: 18px; }
+    .process-num { width: 37px; height: 37px; display: grid; place-items: center; border-radius: 12px; margin-bottom: 18px; color: var(--navy); background: var(--gold-soft); font: 900 13px Manrope,sans-serif; }
+    .process-card h3 { margin: 0 0 8px; color: var(--navy); font: 800 15px Manrope,sans-serif; }
+    .process-card p { margin: 0; color: var(--muted); font-size: 11px; line-height: 1.75; }
 
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        brand: {
-                            blue: '#0F172A',
-                            accent: '#2563EB',
-                            gold: '#F59E0B',
-                            emerald: '#059669',
-                            slate: '#1E293B'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    .services { background: var(--navy); color: #fff; position: relative; overflow: hidden; }
+    .services .section-heading h2 { color: #fff; }
+    .services .section-heading p { color: rgba(255,255,255,.64); }
+    .service-grid { position: relative; z-index: 1; display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+    .service-card { padding: 28px; border: 1px solid rgba(255,255,255,.14); border-radius: 20px; background: rgba(255,255,255,.06); }
+    .service-card .course-icon { color: var(--gold); background: rgba(231,182,74,.13); }
+    .service-card h3 { margin: 18px 0 8px; font: 800 19px Manrope,sans-serif; }
+    .service-card p { min-height: 49px; color: rgba(255,255,255,.65); font-size: 12px; line-height: 1.75; }
+    .service-card .text-link { color: var(--gold); }
+
+    .quote-section { background: var(--surface); }
+    .quote-layout { display: grid; grid-template-columns: .78fr 1.22fr; align-items: start; gap: 42px; }
+    .quote-intro h2 { margin: 13px 0; color: var(--navy); font: 800 35px/1.15 Manrope,sans-serif; letter-spacing: -1px; }
+    .quote-intro p { color: var(--muted); font-size: 13px; line-height: 1.8; }
+    .quote-note { display: flex; gap: 10px; align-items: flex-start; margin-top: 25px; padding: 14px; border-radius: 13px; background: #fff; color: #68758a; font-size: 11px; }
+    .quote-note b { color: var(--navy); }
+    .quote-box { padding: 29px; background: #fff; border: 1px solid var(--line); border-radius: 22px; box-shadow: var(--shadow); }
+    .quote-box h3 { margin: 0 0 5px; color: var(--navy); font: 800 19px Manrope,sans-serif; }
+    .quote-box .sub { color: var(--muted); font-size: 11px; margin-bottom: 22px; }
+    .form-label { display: block; margin: 0 0 9px; color: #344258; font-size: 11px; font-weight: 900; }
+    .location-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+    .location-option { display: flex; align-items: center; gap: 9px; padding: 13px; border: 1px solid var(--line); border-radius: 12px; cursor: pointer; color: #44536a; font-size: 12px; font-weight: 800; }
+    .location-option:has(input:checked) { border-color: var(--blue); background: #f3f7ff; color: var(--blue); }
+    .field { width: 100%; padding: 14px 15px; border: 1px solid #dce2eb; border-radius: 12px; outline: none; color: var(--ink); background: #fff; font-size: 12px; }
+    .quote-total { display: flex; justify-content: space-between; align-items: center; gap: 15px; padding: 19px; margin: 18px 0; border-radius: 15px; background: #f4f8ff; border: 1px solid #e0eaff; }
+    .quote-total span { color: #50617a; font-size: 12px; font-weight: 800; }
+    .quote-total strong { color: var(--blue); font: 900 25px Manrope,sans-serif; }
+    .consent { display: flex; align-items: flex-start; gap: 9px; margin: 15px 0 18px; color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .quote-box .btn { width: 100%; }
+
+    .about-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 55px; align-items: center; }
+    .about-copy h2 { margin: 12px 0; color: var(--navy); font: 800 34px/1.2 Manrope,sans-serif; letter-spacing: -1px; }
+    .about-copy > p { color: var(--muted); font-size: 13px; line-height: 1.85; }
+    .value-list { display: grid; gap: 13px; margin-top: 22px; }
+    .value-row { display: flex; align-items: flex-start; gap: 12px; }
+    .value-row .quick-icon { width: 35px; height: 35px; font-size: 15px; border-radius: 11px; }
+    .value-row strong { display: block; color: var(--navy); font: 800 12px Manrope,sans-serif; }
+    .value-row small { display: block; color: var(--muted); font-size: 11px; margin-top: 2px; }
+
+    .faq { background: var(--surface); }
+    .faq-list { max-width: 830px; margin: auto; display: grid; gap: 10px; }
+    .faq-item { border: 1px solid var(--line); border-radius: 14px; background: #fff; overflow: hidden; }
+    .faq-question { width: 100%; border: 0; display: flex; align-items: center; justify-content: space-between; gap: 20px; padding: 17px 19px; color: var(--navy); background: #fff; text-align: left; font-size: 12px; font-weight: 900; cursor: pointer; }
+    .faq-answer { display: none; padding: 0 19px 17px; color: var(--muted); font-size: 11px; line-height: 1.8; }
+    .faq-item.open .faq-answer { display: block; }
+
+    .contact-band { padding: 58px 0; background: #eff4ff; }
+    .contact-inner { display: flex; align-items: center; justify-content: space-between; gap: 25px; }
+    .contact-inner h2 { margin: 0 0 6px; color: var(--navy); font: 800 27px Manrope,sans-serif; }
+    .contact-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    footer { padding: 48px 0 22px; color: rgba(255,255,255,.7); background: #0b1729; }
+    .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr; gap: 45px; padding-bottom: 35px; }
+    footer .brand-name { color: #fff; } footer .brand-sub { color: rgba(255,255,255,.48); }
+    .footer-desc { max-width: 330px; margin: 17px 0 0; color: rgba(255,255,255,.55); font-size: 11px; line-height: 1.8; }
+    .footer-title { margin: 0 0 14px; color: #fff; font: 800 12px Manrope,sans-serif; }
+    .footer-links { display: grid; gap: 9px; color: rgba(255,255,255,.6); font-size: 11px; }
+    .footer-bottom { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,.1); color: rgba(255,255,255,.4); font-size: 10px; }
+    .floating-whatsapp { position: fixed; z-index: 40; right: 22px; bottom: 22px; width: 58px; height: 58px; display: grid; place-items: center; border-radius: 50%; color: #fff; background: var(--green); box-shadow: 0 12px 30px rgba(21,155,104,.35); font-size: 26px; }
+
+    /* Panel administrativo */
+    .modal { position: fixed; inset: 0; z-index: 100; display: none; align-items: center; justify-content: center; padding: 18px; background: rgba(5,13,26,.78); backdrop-filter: blur(8px); }
+    .modal.show { display: flex; }
+    .modal-card { width: min(530px,100%); max-height: 92vh; overflow: auto; border-radius: 20px; background: #fff; box-shadow: 0 30px 90px rgba(0,0,0,.3); }
+    .modal-head { display: flex; justify-content: space-between; align-items: center; padding: 19px 23px; color: #fff; background: var(--navy); }
+    .modal-head h3 { margin: 0; font: 800 15px Manrope,sans-serif; }
+    .modal-close { border: 0; color: #fff; background: transparent; font-size: 24px; cursor: pointer; }
+    .modal-body { padding: 24px; }
+    .admin-stack { display: grid; gap: 12px; }
+    .admin-stack label { color: #526078; font-size: 11px; font-weight: 800; }
+    .admin-stack input { margin-top: 6px; }
+    .admin-divider { text-align: center; margin: 4px 0; color: #91a0b4; font-size: 10px; }
+    .admin-hint { color: var(--muted); font-size: 10px; line-height: 1.6; }
+    .admin-error { display: none; padding: 10px 12px; border-radius: 10px; color: #9f2727; background: #fff0f0; font-size: 11px; }
+    .admin-data { max-height: 300px; overflow: auto; padding: 14px; border-radius: 12px; background: #101e35; color: #d7e3f5; white-space: pre-wrap; font: 10px/1.6 monospace; }
+    .admin-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 16px; }
+    .hidden { display: none !important; }
+    @media (max-width: 760px) {
+      .nav-links { position: absolute; top: 72px; left: 0; right: 0; display: none; padding: 12px 20px 20px; background: #fff; border-bottom: 1px solid var(--line); flex-direction: column; align-items: stretch; gap: 0; }
+      .nav-links.open { display: flex; }
+      .nav-links a { padding: 12px 4px; border-bottom: 1px solid #f0f2f5; }
+      .menu-toggle { display: grid; place-items: center; }
+      .nav-actions .btn { display: none; }
+      .quickbar-grid, .course-grid, .service-grid, .quote-layout, .about-grid { grid-template-columns: 1fr; }
+      .process-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 </head>
-<body class="bg-slate-50 text-slate-800 font-sans antialiased">
-
-    <!-- Top Info Bar -->
-    <div class="bg-brand-blue text-slate-300 text-xs py-2 px-4 border-b border-slate-800">
-        <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-2">
-            <div class="flex items-center space-x-4">
-                <span class="flex items-center gap-1.5"><i class="fa-solid fa-location-dot text-amber-400"></i> Bogotá y Cundinamarca</span>
-                <span class="hidden sm:inline">|</span>
-                <a href="mailto:ceadrivings.a.s@gmail.com" class="hover:text-amber-400 transition flex items-center gap-1.5"><i class="fa-solid fa-envelope text-amber-400"></i> ceadrivings.a.s@gmail.com</a>
-            </div>
-            <div class="flex items-center gap-4">
-                <a href="https://wa.me/573134908866" target="_blank" class="text-emerald-400 font-semibold hover:underline flex items-center gap-1">
-                    <i class="fa-brands fa-whatsapp text-sm"></i> 313 490 8866
-                </a>
-            </div>
-        </div>
+<body>
+  <div class="topbar">
+    <div class="container topbar-inner">
+      <div class="topbar-group"><span>📍 Bogotá y Cundinamarca</span><a href="mailto:ceadrivings.a.s@gmail.com">✉ ceadrivings.a.s@gmail.com</a></div>
+      <div class="topbar-group"><a class="whatsapp-top" href="https://wa.me/573134908866" target="_blank" rel="noopener">WhatsApp · 313 490 8866</a></div>
     </div>
+  </div>
 
-    <!-- Navigation Header -->
-    <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md shadow-sm border-b border-slate-100">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
-            <a href="#" class="flex items-center space-x-3 group">
-                <div class="w-10 h-10 bg-brand-blue text-amber-400 rounded-xl flex items-center justify-center font-black text-xl shadow-md group-hover:bg-brand-accent group-hover:text-white transition">
-                    C
-                </div>
-                <div class="flex flex-col">
-                    <span class="font-extrabold text-slate-900 text-lg sm:text-xl tracking-wider uppercase">C.E.A DRIVING S.A.S.</span>
-                    <span class="text-xs text-slate-500 font-medium -mt-1">Gestión Vial & Soluciones de Tránsito</span>
-                </div>
-            </a>
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a class="brand" href="#inicio" aria-label="C.E.A. Driving, inicio">
+        <span class="brand-mark">C</span>
+        <span><span class="brand-name">C.E.A. DRIVING S.A.S.</span><span class="brand-sub">Formación y gestión vial</span></span>
+      </a>
+      <nav class="nav-links" id="mainNav" aria-label="Navegación principal">
+        <a href="#inicio">Inicio</a>
+        <a href="#formacion">Formación</a>
+        <a href="#proceso">¿Cómo empezar?</a>
+        <a href="#servicios">Servicios</a>
+        <a href="#cotizador">Cotizador</a>
+        <a href="#contacto">Contacto</a>
+      </nav>
+      <div class="nav-actions">
+        <button class="btn btn-dark" type="button" onclick="openAdminModal()">Administrativo ↗</button>
+        <button class="menu-toggle" id="menuToggle" type="button" aria-label="Abrir menú" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
 
-            <nav class="hidden md:flex items-center space-x-8 font-medium text-sm text-slate-600">
-                <a href="#cotizador" class="hover:text-brand-accent transition">Cotizador</a>
-                <a href="#patios" class="hover:text-brand-accent transition">Salida de Patios</a>
-                <a href="#clases" class="hover:text-brand-accent transition">Clases Prácticas</a>
-            </nav>
-
-            <button type="button" onclick="openAdminModal()" class="bg-brand-blue hover:bg-brand-slate text-white px-5 py-2.5 rounded-lg font-semibold text-sm shadow-md transition flex items-center gap-2">
-                <i class="fa-solid fa-lock text-xs"></i> Panel Admin
-            </button>
-        </div>
-    </header>
-
-    <!-- Cotizador -->
-    <section id="cotizador" class="py-16 bg-white">
-        <div class="max-w-4xl mx-auto px-4">
-            <div class="text-center mb-10">
-                <span class="text-brand-accent font-bold text-xs uppercase tracking-widest">Calculadora Transparente</span>
-                <h2 class="text-3xl font-black text-slate-900 mt-1">Cotiza tu Trámite en Tiempo Real</h2>
-            </div>
-
-            <div class="bg-slate-50 p-6 sm:p-8 rounded-2xl border border-slate-200 shadow-sm">
-                <form id="calcForm" class="space-y-6">
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">1. Selecciona Ubicación</label>
-                        <div class="grid grid-cols-2 gap-4">
-                            <label class="cursor-pointer border p-4 rounded-xl flex items-center gap-3 bg-white hover:border-brand-accent transition">
-                                <input type="radio" name="ubicacion" value="bogota" checked onchange="calcularTotal()" class="accent-brand-accent">
-                                <div><span class="font-bold block text-slate-900 text-sm">Bogotá</span></div>
-                            </label>
-                            <label class="cursor-pointer border p-4 rounded-xl flex items-center gap-3 bg-white hover:border-brand-accent transition">
-                                <input type="radio" name="ubicacion" value="cundinamarca" onchange="calcularTotal()" class="accent-brand-accent">
-                                <div><span class="font-bold block text-slate-900 text-sm">Cundinamarca</span></div>
-                            </label>
-                        </div>
-                    </div>
-
-                    <div>
-                        <label class="block text-xs font-bold text-slate-700 uppercase mb-2">2. Tipo de Trámite</label>
-                        <select id="selectTramite" onchange="calcularTotal()" class="w-full bg-white border border-slate-300 rounded-xl p-3 text-sm font-semibold text-slate-800">
-                            <option value="traspaso_carro">Traspaso de Carro</option>
-                            <option value="traspaso_moto">Traspaso de Moto</option>
-                            <option value="prenda">Levantamiento / Inscripción de Prenda</option>
-                            <option value="renovacion_carro">Renovación Licencia Carro</option>
-                            <option value="renovacion_moto">Renovación Licencia Moto</option>
-                        </select>
-                    </div>
-
-                    <!-- Desglose de Gastos -->
-                    <div class="bg-white p-5 rounded-xl border border-slate-200 space-y-3">
-                        <div class="flex justify-between items-center text-slate-900 font-extrabold text-lg">
-                            <span>Total Estimado:</span>
-                            <span id="txtTotal" class="text-emerald-600 text-2xl">$0</span>
-                        </div>
-                    </div>
-
-                    <div class="bg-white p-4 rounded-xl border border-slate-200 space-y-3 text-xs text-slate-600">
-                        <label class="flex items-start gap-2.5 cursor-pointer">
-                            <input type="checkbox" id="checkTerms" class="mt-0.5 rounded accent-brand-accent">
-                            <span>Acepto Términos, Condiciones y Habeas Data (Ley 1581 de 2012).</span>
-                        </label>
-                    </div>
-
-                    <button type="button" id="btnEnviarCotizacion" onclick="enviarCotizacionWhatsApp()" class="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold py-4 rounded-xl shadow-lg transition flex items-center justify-center gap-2">
-                        <i class="fa-brands fa-whatsapp text-xl"></i> Enviar Cotización por WhatsApp
-                    </button>
-                </form>
-            </div>
-        </div>
+  <main>
+    <!-- SECCIÓN HERO INTEGRANDO TU IMAGEN PRINCIPAL -->
+    <section class="hero" id="inicio">
+      <div class="container hero-grid">
+        <img src="Conduce tu futuro con confianza-1.png" alt="C.E.A. DRIVING S.A.S. - Academia de conducción en Bogotá" class="hero-banner-img">
+      </div>
     </section>
 
-    <!-- Modal Admin con Email, Google y Teléfono -->
-    <div id="adminModal" class="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 hidden flex items-center justify-center p-4">
-        <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl overflow-hidden">
-            <div class="p-5 bg-brand-blue text-white flex items-center justify-between">
-                <h3 class="font-bold text-base"><i class="fa-solid fa-user-shield text-amber-400 mr-2"></i> Acceso Administrador</h3>
-                <button type="button" onclick="closeAdminModal()" class="text-slate-400 hover:text-white text-xl">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <div class="p-6 overflow-y-auto flex-1">
-                <div id="adminLoginSection" class="space-y-4">
-                    <!-- Opción 1: Email / Password -->
-                    <div class="space-y-3">
-                        <h5 class="text-xs font-bold text-slate-700 uppercase">1. Iniciar sesión con Correo</h5>
-                        <input type="email" id="adminEmail" placeholder="ceadrivings.a.s@gmail.com" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs">
-                        <input type="password" id="adminPassword" placeholder="••••••••" class="w-full border border-slate-300 rounded-lg p-2.5 text-xs">
-                        <button type="button" onclick="loginEmail()" class="w-full bg-brand-accent hover:bg-blue-700 text-white font-bold py-2 rounded-lg text-xs">
-                            Ingresar con Email
-                        </button>
-                    </div>
-
-                    <div class="relative my-4">
-                        <div class="absolute inset-0 flex items-center"><div class="w-full border-t border-slate-200"></div></div>
-                        <div class="relative flex justify-center text-xs uppercase"><span class="bg-white px-2 text-slate-400">O bien</span></div>
-                    </div>
-
-                    <!-- Opción 2: Google Sign-in -->
-                    <button type="button" onclick="loginGoogle()" class="w-full border border-slate-300 hover:bg-slate-50 font-bold py-2.5 rounded-lg text-xs flex items-center justify-center gap-2">
-                        <img src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg" class="w-4 h-4"> Ingresar con Google
-                    </button>
-
-                    <!-- Opción 3: Phone Auth -->
-                    <div class="pt-4 border-t border-slate-100 space-y-2">
-                        <h5 class="text-xs font-bold text-slate-700 uppercase">2. Iniciar sesión con Teléfono</h5>
-                        <div class="flex gap-2">
-                            <input type="tel" id="phoneNumber" placeholder="+573134908866" class="flex-1 border border-slate-300 rounded-lg p-2.5 text-xs">
-                            <button type="button" onclick="sendSMS()" class="bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-4 py-2 rounded-lg text-xs">
-                                Enviar SMS
-                            </button>
-                        </div>
-                        <div id="recaptcha-container"></div>
-                        <div id="codeSection" class="hidden flex gap-2 pt-2">
-                            <input type="text" id="verificationCode" placeholder="Código SMS" class="flex-1 border border-slate-300 rounded-lg p-2.5 text-xs">
-                            <button type="button" onclick="verifyCode()" class="bg-slate-800 hover:bg-slate-900 text-white font-bold px-4 py-2 rounded-lg text-xs">
-                                Verificar
-                            </button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Dashboard (Protegido) -->
-                <div id="adminDashboardSection" class="hidden space-y-4">
-                    <div class="flex justify-between items-center bg-slate-50 p-4 rounded-xl border border-slate-200">
-                        <span id="userConnected" class="text-xs font-mono font-bold text-slate-700">Usuario Conectado</span>
-                        <button type="button" onclick="logoutAdmin()" class="bg-rose-100 text-rose-700 hover:bg-rose-200 font-bold px-3 py-1.5 rounded-lg text-xs">Cerrar Sesión</button>
-                    </div>
-                    <h4 class="font-bold text-slate-900 text-sm">Registros en Firestore Database</h4>
-                    <div id="firestoreData" class="text-xs font-mono bg-slate-900 text-slate-100 p-4 rounded-xl overflow-x-auto">
-                        Cargando registros...
-                    </div>
-                </div>
-            </div>
-        </div>
+    <div class="quickbar">
+      <div class="container quickbar-grid">
+        <div class="quick-item"><span class="quick-icon">◉</span><span><strong>Atención cercana</strong><small>Resolvemos tus inquietudes</small></span></div>
+        <div class="quick-item"><span class="quick-icon">✓</span><span><strong>Orientación clara</strong><small>Te explicamos cada paso</small></span></div>
+        <div class="quick-item"><span class="quick-icon">↗</span><span><strong>Contacto directo</strong><small>Comunícate por WhatsApp</small></span></div>
+      </div>
     </div>
 
-    <script>
-        const TARIFAS = { traspaso_carro: 260400, traspaso_moto: 145500, prenda: 206900, renovacion_carro: 151500, renovacion_moto: 266400 };
+    <section class="content-section courses" id="formacion">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow" style="color:var(--blue); font-weight:800; font-size:11px; text-transform:uppercase; letter-spacing:1.5px;">Programas de formación</span>
+          <h2>Prepárate para conducir con confianza</h2>
+          <p>Conoce las categorías de formación sobre las que puedes solicitar información. Nuestro equipo te orientará sobre requisitos, proceso y disponibilidad.</p>
+        </div>
+        <div class="course-grid">
+          <article class="course-card">
+            <div class="course-top"><span class="course-icon">🏍</span><span class="course-code">CATEGORÍA A2</span></div>
+            <h3>Motocicleta</h3>
+            <p>Orientación para quienes desean formarse en conducción de motocicletas y desarrollar hábitos de movilidad segura.</p>
+            <div class="course-points"><span>Conducción responsable</span><span>Seguridad vial</span><span>Información de requisitos</span><span>Orientación de inscripción</span></div>
+            <a class="text-link" href="https://wa.me/573134908866?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20formaci%C3%B3n%20para%20motocicleta%20A2." target="_blank" rel="noopener">Consultar programa ↗</a>
+          </article>
+          <article class="course-card">
+            <div class="course-top"><span class="course-icon">🚘</span><span class="course-code">CATEGORÍA B1</span></div>
+            <h3>Automóvil particular</h3>
+            <p>Información para comenzar tu proceso de formación como conductor de automóvil particular, con enfoque en responsabilidad vial.</p>
+            <div class="course-points"><span>Fundamentos de conducción</span><span>Seguridad vial</span><span>Información de requisitos</span><span>Orientación de inscripción</span></div>
+            <a class="text-link" href="https://wa.me/573134908866?text=Hola%2C%20quiero%20informaci%C3%B3n%20sobre%20formaci%C3%B3n%20para%20autom%C3%B3vil%20B1." target="_blank" rel="noopener">Consultar programa ↗</a>
+          </article>
+        </div>
+        <div class="notice"><strong>Información importante:</strong> los cursos, fechas, tarifas, cupos y procesos de certificación deben confirmarse directamente con C.E.A. DRIVING S.A.S.</div>
+      </div>
+    </section>
 
-        function calcularTotal() {
-            const ubicacion = document.querySelector('input[name="ubicacion"]:checked').value;
-            const tramite = document.getElementById('selectTramite').value;
-            const honorarios = ubicacion === 'bogota' ? 140000 : 180000;
-            const derechos = TARIFAS[tramite];
-            document.getElementById('txtTotal').innerText = '$' + (derechos + honorarios).toLocaleString('es-CO');
+    <section class="content-section" id="proceso">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow" style="color:var(--blue); font-weight:800; font-size:11px; text-transform:uppercase; letter-spacing:1.5px;">Te acompañamos</span>
+          <h2>Empezar es más sencillo de lo que imaginas</h2>
+          <p>Un proceso de atención claro para que conozcas las opciones y sepas qué hacer en cada etapa.</p>
+        </div>
+        <div class="process-grid">
+          <article class="process-card"><div class="process-num">01</div><h3>Contáctanos</h3><p>Cuéntanos qué categoría o servicio te interesa y cómo podemos orientarte.</p></article>
+          <article class="process-card"><div class="process-num">02</div><h3>Recibe información</h3><p>Conoce los requisitos, condiciones, valores y disponibilidad correspondiente.</p></article>
+          <article class="process-card"><div class="process-num">03</div><h3>Revisa tu proceso</h3><p>Te explicamos los pasos y la documentación que debes tener en cuenta.</p></article>
+          <article class="process-card"><div class="process-num">04</div><h3>Da el siguiente paso</h3><p>Avanza con el acompañamiento y la información confirmada por nuestro equipo.</p></article>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section services" id="servicios">
+      <div class="container">
+        <div class="section-heading">
+          <span class="eyebrow" style="color:var(--gold); font-weight:800; font-size:11px; text-transform:uppercase; letter-spacing:1.5px;">Soluciones de movilidad</span>
+          <h2>También te orientamos en tus trámites</h2>
+          <p>Encuentra información inicial sobre gestiones de tránsito y comunícate con nuestro equipo para revisar tu caso.</p>
+        </div>
+        <div class="service-grid">
+          <article class="service-card"><span class="course-icon">📄</span><h3>Gestiones de tránsito</h3><p>Orientación inicial sobre traspasos, prendas y renovación de licencias. Consulta los valores estimados en nuestro cotizador.</p><a class="text-link" href="#cotizador">Ir al cotizador ↗</a></article>
+          <article class="service-card" id="patios"><span class="course-icon">🚗</span><h3>Orientación para salida de patios</h3><p>Cuéntanos tu situación para indicarte qué información y documentos conviene revisar antes de adelantar el trámite.</p><a class="text-link" href="https://wa.me/573134908866?text=Hola%2C%20necesito%20orientaci%C3%B3n%20sobre%20un%20tr%C3%A1mite%20de%20salida%20de%20patios." target="_blank" rel="noopener">Consultar por WhatsApp ↗</a></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- COTIZADOR CON CÁLCULO INMEDIATO CORREGIDO -->
+    <section class="content-section quote-section" id="cotizador">
+      <div class="container quote-layout">
+        <div class="quote-intro">
+          <span class="eyebrow" style="color:var(--blue); font-weight:800; font-size:11px; text-transform:uppercase; letter-spacing:1.5px;">Cotización inicial</span>
+          <h2>Calcula un valor estimado para tu trámite</h2>
+          <p>Selecciona la ubicación y el tipo de gestión para obtener una referencia inicial. Después podrás enviar los datos por WhatsApp para confirmar los detalles.</p>
+          <div class="quote-note"><span>ⓘ</span><span><b>Ten en cuenta:</b> el valor calculado es orientativo y sujeto a validación de tarifas vigentes.</span></div>
+        </div>
+        <div class="quote-box">
+          <h3>Cotizador de trámites</h3>
+          <div class="sub">Completa los campos para calcular tu estimado.</div>
+          <form id="calcForm" onsubmit="return false;">
+            <label class="form-label">1. Selecciona la ubicación</label>
+            <div class="location-options">
+              <label class="location-option"><input type="radio" name="ubicacion" value="bogota" checked onchange="calcularTotal()"> Bogotá</label>
+              <label class="location-option"><input type="radio" name="ubicacion" value="cundinamarca" onchange="calcularTotal()"> Cundinamarca</label>
+            </div>
+            <label class="form-label" for="selectTramite">2. Tipo de trámite</label>
+            <select class="field" id="selectTramite" onchange="calcularTotal()">
+              <option value="traspaso_carro">Traspaso de carro</option>
+              <option value="traspaso_moto">Traspaso de moto</option>
+              <option value="prenda">Levantamiento / inscripción de prenda</option>
+              <option value="renovacion_carro">Renovación de licencia de carro</option>
+              <option value="renovacion_moto">Renovación de licencia de moto</option>
+            </select>
+            <div class="quote-total"><span>Total estimado</span><strong id="txtTotal">$0</strong></div>
+            <label class="consent"><input type="checkbox" id="checkTerms"><span>Autorizo el tratamiento de los datos suministrados para gestionar esta solicitud.</span></label>
+            <button class="btn btn-whatsapp" type="button" id="btnEnviarCotizacion">Enviar cotización por WhatsApp ↗</button>
+          </form>
+        </div>
+      </div>
+    </section>
+
+    <section class="content-section faq" id="preguntas">
+      <div class="container">
+        <div class="section-heading"><span class="eyebrow" style="color:var(--blue); font-weight:800; font-size:11px; text-transform:uppercase; letter-spacing:1.5px;">Preguntas frecuentes</span><h2>¿Tienes alguna duda?</h2><p>Te compartimos algunas respuestas iniciales.</p></div>
+        <div class="faq-list">
+          <div class="faq-item"><button class="faq-question" type="button" onclick="this.parentElement.classList.toggle('open')"><span>¿Cómo puedo recibir información sobre los cursos?</span><span>＋</span></button><div class="faq-answer">Selecciona la categoría de tu interés y utiliza el botón de WhatsApp para comunicarte directamente con nuestro equipo.</div></div>
+          <div class="faq-item"><button class="faq-question" type="button" onclick="this.parentElement.classList.toggle('open')"><span>¿El cotizador muestra el valor definitivo?</span><span>＋</span></button><div class="faq-answer">Es un estimado de referencia. El valor final se confirma según las tarifas vigentes del organismo de tránsito.</div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="contact-band" id="contacto">
+      <div class="container contact-inner">
+        <div><h2>¿Listo para dar el siguiente paso?</h2><p>Comunícate con C.E.A. DRIVING S.A.S. y recibe orientación directa.</p></div>
+        <div class="contact-actions"><a class="btn btn-whatsapp" href="https://wa.me/573134908866" target="_blank" rel="noopener">WhatsApp · 313 490 8866 ↗</a></div>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <div class="footer-bottom"><span>© <span id="currentYear"></span> C.E.A. DRIVING S.A.S. Todos los derechos reservados.</span><button type="button" class="text-link" style="border:0;background:none;color:#e7b64a;cursor:pointer;" onclick="openAdminModal()">Panel Administrativo ↗</button></div>
+    </div>
+  </footer>
+
+  <a class="floating-whatsapp" href="https://wa.me/573134908866" target="_blank" rel="noopener" aria-label="Contactar por WhatsApp">💬</a>
+
+  <!-- MODAL ADMINISTRATIVO CORREGIDO Y CONECTADO A FIREBASE -->
+  <div class="modal" id="adminModal" role="dialog" aria-modal="true" aria-labelledby="adminTitle">
+    <div class="modal-card">
+      <div class="modal-head"><h3 id="adminTitle">Acceso Administrativo</h3><button class="modal-close" type="button" onclick="closeAdminModal()" aria-label="Cerrar">×</button></div>
+      <div class="modal-body">
+        <div id="adminLoginSection" class="admin-stack">
+          <p class="admin-hint">Ingresa con una cuenta autorizada de Firebase para consultar los registros.</p>
+          <div id="adminError" class="admin-error"></div>
+          <label>Correo electrónico<input class="field" type="email" id="adminEmail" placeholder="correo@ejemplo.com" autocomplete="username"></label>
+          <label>Contraseña<input class="field" type="password" id="adminPassword" placeholder="••••••••" autocomplete="current-password"></label>
+          <button class="btn btn-primary" type="button" onclick="loginEmail()">Ingresar con correo</button>
+          <div class="admin-divider">O continúa con</div>
+          <button class="btn btn-light" type="button" onclick="loginGoogle()">Ingresar con Google</button>
+          <label>Teléfono (SMS)<input class="field" type="tel" id="phoneNumber" placeholder="+573134908866" autocomplete="tel"></label>
+          <div id="recaptcha-container"></div>
+          <button class="btn btn-light" type="button" onclick="sendSMS()">Enviar código SMS</button>
+          <div id="codeSection" class="hidden"><input class="field" type="text" id="verificationCode" placeholder="Código de verificación"><button class="btn btn-dark" style="width:100%;margin-top:9px" type="button" onclick="verifyCode()">Verificar código</button></div>
+        </div>
+        <div id="adminDashboardSection" class="hidden">
+          <div class="admin-row"><strong id="userConnected" style="font-size:11px;color:var(--navy)">Usuario conectado</strong><button class="btn btn-light" type="button" onclick="logoutAdmin()">Cerrar sesión</button></div>
+          <h4 style="font:800 13px Manrope,sans-serif;color:var(--navy)">Registros de consentimientos</h4>
+          <div id="firestoreData" class="admin-data">Cargando registros...</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT CON LA LÓGICA DEL COTIZADOR Y FIREBASE -->
+  <script>
+    const TARIFAS = { traspaso_carro: 260400, traspaso_moto: 145500, prenda: 206900, renovacion_carro: 151500, renovacion_moto: 266400 };
+    const HONORARIOS = { bogota: 140000, cundinamarca: 180000 };
+    const numeroCOP = new Intl.NumberFormat('es-CO', { style: 'currency', currency: 'COP', maximumFractionDigits: 0 });
+
+    function calcularTotal() {
+      const ubicacion = document.querySelector('input[name="ubicacion"]:checked')?.value || 'bogota';
+      const tramite = document.getElementById('selectTramite').value;
+      const total = (TARIFAS[tramite] || 0) + (HONORARIOS[ubicacion] || 0);
+      document.getElementById('txtTotal').textContent = numeroCOP.format(total);
+      return { ubicacion, tramite, total: numeroCOP.format(total) };
+    }
+
+    async function enviarCotizacionWhatsApp() {
+      const check = document.getElementById('checkTerms');
+      if (!check.checked) {
+        alert('Por favor, acepta los términos de Habeas Data antes de continuar.');
+        return;
+      }
+      const datos = calcularTotal();
+      const select = document.getElementById('selectTramite');
+      const tramiteTexto = select.options[select.selectedIndex].text;
+      try {
+        if (window.db && window.firebaseAddDoc) {
+          await window.firebaseAddDoc(window.firebaseCollection(window.db, 'consentimientos_habeas_data'), {
+            tramite: tramiteTexto,
+            ubicacion: datos.ubicacion,
+            valorTotal: datos.total,
+            aceptoTerminos: true,
+            fechaHora: window.firebaseServerTimestamp()
+          });
         }
+      } catch (error) {
+        console.error('Error guardando en Firestore:', error);
+      }
+      const mensaje = `Hola, quiero cotizar ${tramiteTexto} en ${datos.ubicacion}. El estimado mostrado es ${datos.total}.`;
+      window.open(`https://wa.me/573134908866?text=${encodeURIComponent(mensaje)}`, '_blank', 'noopener');
+    }
 
-        async function enviarCotizacionWhatsApp() {
-            if (!document.getElementById('checkTerms').checked) {
-                alert("Por favor acepta los términos de Habeas Data.");
-                return;
-            }
+    document.getElementById('btnEnviarCotizacion').addEventListener('click', enviarCotizacionWhatsApp);
 
-            const ubicacion = document.querySelector('input[name="ubicacion"]:checked').value;
-            const select = document.getElementById('selectTramite');
-            const tramiteTexto = select.options[select.selectedIndex].text;
-            const total = document.getElementById('txtTotal').innerText;
+    // Menú móvil
+    const menuToggle = document.getElementById('menuToggle');
+    const mainNav = document.getElementById('mainNav');
+    menuToggle.addEventListener('click', () => mainNav.classList.toggle('open'));
 
-            try {
-                if (window.db) {
-                    await window.firebaseAddDoc(window.firebaseCollection(window.db, "consentimientos_habeas_data"), {
-                        tramite: tramiteTexto,
-                        ubicacion: ubicacion,
-                        valorTotal: total,
-                        aceptoTerminos: true,
-                        fechaHora: window.firebaseServerTimestamp()
-                    });
-                }
-            } catch (e) { console.error(e); }
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+    calcularTotal();
 
-            const mensaje = `Hola, acepto los términos y solicito cotización para ${tramiteTexto} (${ubicacion}). Total: ${total}.`;
-            window.open(`https://wa.me/573134908866?text=${encodeURIComponent(mensaje)}`, '_blank');
-        }
+    // Funciones administrativas y manejo de errores
+    function showAdminError(message) {
+      const el = document.getElementById('adminError');
+      el.textContent = message;
+      el.style.display = 'block';
+    }
+    function clearAdminError() {
+      const el = document.getElementById('adminError');
+      el.textContent = '';
+      el.style.display = 'none';
+    }
 
-        // Funciones Modal & Auth
-        function openAdminModal() {
-            document.getElementById('adminModal').classList.remove('hidden');
-            window.firebaseOnAuth(window.auth, (user) => {
-                if (user) {
-                    document.getElementById('adminLoginSection').classList.add('hidden');
-                    document.getElementById('adminDashboardSection').classList.remove('hidden');
-                    document.getElementById('userConnected').innerText = user.email || user.phoneNumber || user.displayName;
-                    cargarDatos();
-                } else {
-                    document.getElementById('adminLoginSection').classList.remove('hidden');
-                    document.getElementById('adminDashboardSection').classList.add('hidden');
-                }
-            });
-        }
-        function closeAdminModal() { document.getElementById('adminModal').classList.add('hidden'); }
+    let adminAuthListenerStarted = false;
+    function openAdminModal() {
+      document.getElementById('adminModal').classList.add('show');
+      clearAdminError();
+      if (window.firebaseOnAuth && window.auth && !adminAuthListenerStarted) {
+        adminAuthListenerStarted = true;
+        window.firebaseOnAuth(window.auth, user => {
+          if (user) {
+            document.getElementById('adminLoginSection').classList.add('hidden');
+            document.getElementById('adminDashboardSection').classList.remove('hidden');
+            document.getElementById('userConnected').textContent = user.email || user.phoneNumber || 'Usuario conectado';
+            cargarDatos();
+          } else {
+            document.getElementById('adminLoginSection').classList.remove('hidden');
+            document.getElementById('adminDashboardSection').classList.add('hidden');
+          }
+        });
+      }
+    }
+    function closeAdminModal() { document.getElementById('adminModal').classList.remove('show'); }
 
-        async function loginEmail() {
-            const e = document.getElementById('adminEmail').value;
-            const p = document.getElementById('adminPassword').value;
-            try { await window.firebaseSignInEmail(window.auth, e, p); } catch(err) { alert(err.message); }
-        }
+    async function loginEmail() {
+      clearAdminError();
+      const email = document.getElementById('adminEmail').value.trim();
+      const password = document.getElementById('adminPassword').value;
+      if (!email || !password) return showAdminError('Ingresa correo y contraseña.');
+      try { await window.firebaseSignInEmail(window.auth, email, password); }
+      catch (error) { showAdminError(error.message || 'Error al iniciar sesión.'); }
+    }
 
-        async function loginGoogle() {
-            try { await window.firebaseSignInGoogle(); } catch(err) { alert(err.message); }
-        }
+    async function loginGoogle() {
+      clearAdminError();
+      try { await window.firebaseSignInGoogle(); }
+      catch (error) { showAdminError(error.message || 'Error al iniciar sesión con Google. Asegúrate de autorizar tu dominio en Firebase.'); }
+    }
 
-        let confirmationResultGlobal = null;
-        async function sendSMS() {
-            const phone = document.getElementById('phoneNumber').value;
-            window.recaptchaVerifier = new window.RecaptchaVerifier(window.auth, 'recaptcha-container', { size: 'invisible' });
-            try {
-                confirmationResultGlobal = await window.signInWithPhoneNumber(window.auth, phone, window.recaptchaVerifier);
-                document.getElementById('codeSection').classList.remove('hidden');
-                alert("Código de verificación enviado por SMS.");
-            } catch(err) { alert(err.message); }
-        }
+    let confirmationResultGlobal = null;
+    async function sendSMS() {
+      clearAdminError();
+      const phone = document.getElementById('phoneNumber').value.trim();
+      if (!phone) return showAdminError('Ingresa el número de teléfono con indicativo.');
+      try {
+        if (!window.recaptchaVerifier) window.recaptchaVerifier = new window.RecaptchaVerifier(window.auth, 'recaptcha-container', { size: 'invisible' });
+        confirmationResultGlobal = await window.signInWithPhoneNumber(window.auth, phone, window.recaptchaVerifier);
+        document.getElementById('codeSection').classList.remove('hidden');
+        showAdminError('Código enviado por SMS.');
+      } catch (error) { showAdminError(error.message || 'Error al enviar SMS.'); }
+    }
 
-        async function verifyCode() {
-            const code = document.getElementById('verificationCode').value;
-            try { await confirmationResultGlobal.confirm(code); } catch(err) { alert(err.message); }
-        }
+    async function verifyCode() {
+      clearAdminError();
+      const code = document.getElementById('verificationCode').value.trim();
+      try { await confirmationResultGlobal.confirm(code); }
+      catch (error) { showAdminError('Código incorrecto.'); }
+    }
 
-        async function logoutAdmin() { await window.firebaseSignOut(window.auth); }
+    async function logoutAdmin() {
+      try { await window.firebaseSignOut(window.auth); }
+      catch (error) { console.error(error); }
+    }
 
-        async function cargarDatos() {
-            const q = window.firebaseQuery(window.firebaseCollection(window.db, "consentimientos_habeas_data"), window.firebaseOrderBy("fechaHora", "desc"));
-            const snap = await window.firebaseGetDocs(q);
-            let docs = [];
-            snap.forEach(d => docs.push(d.data()));
-            document.getElementById('firestoreData').innerText = JSON.stringify(docs, null, 2);
-        }
+    async function cargarDatos() {
+      const target = document.getElementById('firestoreData');
+      target.textContent = 'Cargando registros...';
+      try {
+        const q = window.firebaseQuery(window.firebaseCollection(window.db, 'consentimientos_habeas_data'), window.firebaseOrderBy('fechaHora', 'desc'));
+        const snap = await window.firebaseGetDocs(q);
+        const docs = [];
+        snap.forEach(doc => {
+          const data = doc.data();
+          docs.push({ tramite: data.tramite, ubicacion: data.ubicacion, valorTotal: data.valorTotal, fechaHora: data.fechaHora?.toDate ? data.fechaHora.toDate().toLocaleString('es-CO') : '' });
+        });
+        target.textContent = docs.length ? JSON.stringify(docs, null, 2) : 'No hay registros todavía.';
+      } catch (error) {
+        target.textContent = 'Error al cargar registros de Firestore.';
+      }
+    }
 
-        calcularTotal();
-    </script>
+    window.openAdminModal = openAdminModal;
+    window.closeAdminModal = closeAdminModal;
+    window.loginEmail = loginEmail;
+    window.loginGoogle = loginGoogle;
+    window.sendSMS = sendSMS;
+    window.verifyCode = verifyCode;
+    window.logoutAdmin = logoutAdmin;
+  </script>
+
+  <!-- SDK DE FIREBASE OFICIAL -->
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js';
+    import { getFirestore, collection, addDoc, getDocs, query, orderBy, serverTimestamp } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js';
+    import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, RecaptchaVerifier, signInWithPhoneNumber, signOut, onAuthStateChanged } from 'https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js';
+
+    const firebaseConfig = {
+      apiKey: 'AIzaSyAP7ghWc3ztba9v0jRdgXPZhuhR9zopiwg',
+      authDomain: 'ceadriving-2942a.firebaseapp.com',
+      projectId: 'ceadriving-2942a',
+      storageBucket: 'ceadriving-2942a.firebasestorage.app',
+      messagingSenderId: '800710138962',
+      appId: '1:800710138962:web:9fef2a7627c2a1e2c0d38b',
+      measurementId: 'G-GMK5RTMRN8'
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const auth = getAuth(app);
+    const googleProvider = new GoogleAuthProvider();
+
+    window.db = db;
+    window.auth = auth;
+    window.firebaseAddDoc = addDoc;
+    window.firebaseCollection = collection;
+    window.firebaseGetDocs = getDocs;
+    window.firebaseQuery = query;
+    window.firebaseOrderBy = orderBy;
+    window.firebaseServerTimestamp = serverTimestamp;
+    window.firebaseSignInEmail = signInWithEmailAndPassword;
+    window.firebaseSignInGoogle = () => signInWithPopup(auth, googleProvider);
+    window.RecaptchaVerifier = RecaptchaVerifier;
+    window.signInWithPhoneNumber = signInWithPhoneNumber;
+    window.firebaseSignOut = signOut;
+    window.firebaseOnAuth = onAuthStateChanged;
+  </script>
 </body>
 </html>
